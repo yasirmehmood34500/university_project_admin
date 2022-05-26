@@ -99,44 +99,41 @@ class UniversityListTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(style: TextStyle(fontWeight: FontWeight.bold), name!),
-              SizedBox(
-                height: 10.0,
-              ),
               Container(
                 child: Link(
-                  target: LinkTarget.self,
+                  target: LinkTarget.blank,
                   uri: Uri.parse(registerLink!),
                   builder: (context, followLink) => GestureDetector(
                     onTap: followLink,
-                    child: Text(
-                      "For Registration",
-                      style: TextStyle(
-                        color: Colors.blue,
+                    child: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        "For Registration",
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10.0,
               ),
               Container(
                 child: Link(
-                  target: LinkTarget.self,
+                  target: LinkTarget.blank,
                   uri: Uri.parse(requirementLink!),
                   builder: (context, followLink) => GestureDetector(
                     onTap: followLink,
-                    child: Text(
-                      "For Requirement",
-                      style: TextStyle(
-                        color: Colors.blue,
+                    child: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        "For Requirement",
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10.0,
               ),
             ],
           ),

@@ -23,8 +23,18 @@ class UniversityListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  addMerit(uIndex, MeritResult data) {
+    _universityListModel.result![uIndex].meritResult!.add(data);
+    notifyListeners();
+  }
+
   updateUniversity(index, Result data) {
     _universityListModel.result![index] = data;
+    notifyListeners();
+  }
+
+  updateMerit(uIndex, mIndex, MeritResult data) {
+    _universityListModel.result![uIndex].meritResult![mIndex] = data;
     notifyListeners();
   }
 
@@ -36,6 +46,19 @@ class UniversityListProvider extends ChangeNotifier {
     if (source.statusCode == 200) {
       if (jsonDecode(source.body)["status"] == 200) {
         _universityListModel.result!.removeAt(index);
+        notifyListeners();
+      }
+    }
+  }
+
+  deleteMerit(uIndex, index, id) async {
+    var url = Uri.https(
+        BaseUrl.apiBaseUrl, '${BaseUrl.apiBaseUrlSecond}delete_merit.php', {});
+    Map object = {"id": id};
+    var source = await http.post(url, body: jsonEncode(object));
+    if (source.statusCode == 200) {
+      if (jsonDecode(source.body)["status"] == 200) {
+        _universityListModel.result![uIndex].meritResult!.removeAt(index);
         notifyListeners();
       }
     }

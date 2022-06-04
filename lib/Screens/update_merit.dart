@@ -3,73 +3,69 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_project_admin/Providers/university_list_provider.dart';
+import '/Providers/university_list_provider.dart';
 import '/Models/university_list_model.dart';
-import '/Screens/uni_list.dart';
 import '../base_url.dart';
 
-class UniUpdate extends StatefulWidget {
+class MeritUpdate extends StatefulWidget {
   final int? index;
+  final int? uniIndex;
   final String? id;
-  final String? name;
-  final String? ranking;
-  final String? registerLink;
-  final String? requirementLink;
-  const UniUpdate(
-      {Key? key,
-      this.index,
-      this.id,
-      this.name,
-      this.ranking,
-      this.registerLink,
-      this.requirementLink})
-      : super(key: key);
+  final String? deptName;
+  final String? lastMerit;
+  final String? lastMeritUrl;
+  final String? entryTest;
+  const MeritUpdate({
+    Key? key,
+    this.index,
+    this.id,
+    this.deptName,
+    this.lastMerit,
+    this.lastMeritUrl,
+    this.entryTest,
+    this.uniIndex,
+  }) : super(key: key);
 
   @override
-  State<UniUpdate> createState() => _UniUpdateState();
+  State<MeritUpdate> createState() => _MeritUpdateState();
 }
 
-class _UniUpdateState extends State<UniUpdate> {
+class _MeritUpdateState extends State<MeritUpdate> {
   final formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController rankingController = TextEditingController();
-  TextEditingController registerLinkController = TextEditingController();
-  TextEditingController requirementLinkController = TextEditingController();
+  TextEditingController deptNameController = TextEditingController();
+  TextEditingController lastMeritController = TextEditingController();
+  TextEditingController lastMeritUrlController = TextEditingController();
+  TextEditingController entryTestController = TextEditingController();
   bool isLoadding = false;
   String saveResponse = "";
-  uniSaveBtn() async {
+  meritUpdBtn() async {
     if (formKey.currentState!.validate()) {
       setState(() {
         isLoadding = true;
       });
       var url = Uri.https(BaseUrl.apiBaseUrl,
-          '${BaseUrl.apiBaseUrlSecond}update_university.php', {});
+          '${BaseUrl.apiBaseUrlSecond}update_merit.php', {});
       Map object = {
         "id": widget.id,
-        "name": nameController.text,
-        "ranking": rankingController.text,
-        "register_link": registerLinkController.text,
-        "requirement_link": requirementLinkController.text
+        "dept_name": deptNameController.text,
+        "last_merit": lastMeritController.text,
+        "last_merit_url": lastMeritUrlController.text,
+        "entry_test": entryTestController.text
       };
       var source = await http.post(url, body: jsonEncode(object));
       if (source.statusCode == 200) {
         if (jsonDecode(source.body)["status"] == 200) {
-          var universityAddedObject = jsonDecode(source.body)["result"];
-          var universityNewObject = Result(
-              id: universityAddedObject["id"],
-              name: universityAddedObject["name"],
-              ranking: universityAddedObject["ranking"],
-              registerLink: universityAddedObject["register_link"],
-              requirementLink: universityAddedObject["requirement_link"],
-              meritResult: []);
-          Provider.of<UniversityListProvider>(context, listen: false)
-              .updateUniversity(widget.index, universityNewObject);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => UniList(),
-            ),
+          var meritUpdatedObject = jsonDecode(source.body)["result"];
+          var meritNewObject = MeritResult(
+            id: meritUpdatedObject["id"],
+            deptName: meritUpdatedObject["dept_name"],
+            lastMerit: meritUpdatedObject["last_merit"],
+            lastMeritUrl: meritUpdatedObject["last_merit_url"],
+            entryTest: meritUpdatedObject["entry_test"],
           );
+          Provider.of<UniversityListProvider>(context, listen: false)
+              .updateMerit(widget.uniIndex, widget.index, meritNewObject);
+          Navigator.pop(context);
         } else if (jsonDecode(source.body)["status"] == 202) {
           setState(() {
             saveResponse = jsonDecode(source.body)["message"];
@@ -92,17 +88,17 @@ class _UniUpdateState extends State<UniUpdate> {
 
   @override
   void initState() {
-    nameController.text = widget.name!;
-    rankingController.text = widget.ranking!;
-    registerLinkController.text = widget.registerLink!;
-    requirementLinkController.text = widget.requirementLink!;
+    deptNameController.text = widget.deptName!;
+    lastMeritController.text = widget.lastMerit!;
+    lastMeritUrlController.text = widget.lastMeritUrl!;
+    entryTestController.text = widget.entryTest!;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Update University")),
+      appBar: AppBar(title: Text("Update Merit")),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(10.0),
@@ -111,7 +107,7 @@ class _UniUpdateState extends State<UniUpdate> {
             children: [
               Center(
                 child: Text(
-                  "Update University",
+                  "Update Merit",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -136,11 +132,11 @@ class _UniUpdateState extends State<UniUpdate> {
                           color: Colors.grey,
                         ),
                         hintText: 'ABC',
-                        labelText: 'Name',
+                        labelText: 'Department Name',
                       ),
-                      controller: nameController,
+                      controller: deptNameController,
                       validator: (val) {
-                        return val!.length > 2 ? null : "Min 3 latter";
+                        return val!.length > 1 ? null : "Min 2 latter";
                       },
                     ),
                     SizedBox(
@@ -157,9 +153,9 @@ class _UniUpdateState extends State<UniUpdate> {
                           color: Colors.grey,
                         ),
                         hintText: '1',
-                        labelText: 'ranking',
+                        labelText: 'Merit',
                       ),
-                      controller: rankingController,
+                      controller: lastMeritController,
                       keyboardType: TextInputType.number,
                       validator: (val) {
                         return val!.length > 0 ? null : "Min 1 digit";
@@ -179,9 +175,9 @@ class _UniUpdateState extends State<UniUpdate> {
                           color: Colors.grey,
                         ),
                         hintText: 'http://abc.com',
-                        labelText: 'Registration Link',
+                        labelText: 'Merit List Link',
                       ),
-                      controller: registerLinkController,
+                      controller: lastMeritUrlController,
                       validator: (val) {
                         return val!.length > 10 ? null : "Min 10 letter";
                       },
@@ -199,12 +195,13 @@ class _UniUpdateState extends State<UniUpdate> {
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
-                        hintText: 'http://abc.com',
-                        labelText: 'Requirement Link',
+                        hintText: '1,0',
+                        labelText: 'Entry Test',
                       ),
-                      controller: requirementLinkController,
+                      controller: entryTestController,
+                      keyboardType: TextInputType.number,
                       validator: (val) {
-                        return val!.length > 10 ? null : "Min 10 letter";
+                        return val!.length == 1 ? null : "Only 1 letter";
                       },
                     ),
                     SizedBox(
@@ -234,7 +231,7 @@ class _UniUpdateState extends State<UniUpdate> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            uniSaveBtn();
+                            meritUpdBtn();
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(

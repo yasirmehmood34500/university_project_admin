@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:university_project_admin/Components/my_drawer_app.dart';
 import 'package:university_project_admin/Models/university_list_model.dart';
 import 'package:university_project_admin/Providers/university_list_provider.dart';
+import 'package:university_project_admin/Screens/merit_list.dart';
 import 'package:university_project_admin/Screens/uni_update.dart';
 import 'package:url_launcher/link.dart';
 
@@ -62,6 +63,7 @@ class _UniListState extends State<UniList> {
                           requirementLink:
                               universityList[index].requirementLink,
                           index: index,
+                          meritResult: universityList[index].meritResult,
                         );
                       })
                   : Center(
@@ -79,15 +81,17 @@ class UniversityListTile extends StatelessWidget {
   final String? ranking;
   final String? registerLink;
   final String? requirementLink;
-  const UniversityListTile(
-      {Key? key,
-      this.index,
-      this.id,
-      this.name,
-      this.ranking,
-      this.registerLink,
-      this.requirementLink})
-      : super(key: key);
+  final List<MeritResult>? meritResult;
+  const UniversityListTile({
+    Key? key,
+    this.index,
+    this.id,
+    this.name,
+    this.ranking,
+    this.registerLink,
+    this.requirementLink,
+    this.meritResult,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +188,7 @@ class UniversityListTile extends StatelessWidget {
             ),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => UniUpdate(
@@ -199,6 +203,35 @@ class UniversityListTile extends StatelessWidget {
               },
               child: Text(
                 "Update",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+            ),
+            padding: EdgeInsets.all(
+              10,
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => MeritList(
+                      uniIndex: index,
+                      uniId: id,
+                      meritResult: meritResult,
+                    ),
+                  ),
+                );
+              },
+              child: Text(
+                "Merit",
                 style: TextStyle(
                   color: Colors.white,
                 ),

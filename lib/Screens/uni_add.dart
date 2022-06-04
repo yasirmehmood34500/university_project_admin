@@ -47,7 +47,7 @@ class _UniAddState extends State<UniAdd> {
             ranking: universityAddedObject["ranking"],
             registerLink: universityAddedObject["register_link"],
             requirementLink: universityAddedObject["requirement_link"],
-            createAt: DateTime.parse(universityAddedObject["create_at"]),
+            meritResult: [],
           );
           Provider.of<UniversityListProvider>(context, listen: false)
               .addUniversity(universityNewObject);
@@ -59,7 +59,7 @@ class _UniAddState extends State<UniAdd> {
           );
         } else if (jsonDecode(source.body)["status"] == 202) {
           setState(() {
-            saveResponse = jsonDecode(source.body)["result"]["message"];
+            saveResponse = jsonDecode(source.body)["message"];
             isLoadding = false;
           });
         } else {

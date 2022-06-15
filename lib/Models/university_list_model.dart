@@ -37,6 +37,7 @@ class Result {
         this.id,
         this.name,
         this.ranking,
+        this.worldRanking,
         this.registerLink,
         this.requirementLink,
         this.meritResult,
@@ -45,6 +46,7 @@ class Result {
     String? id;
     String? name;
     String? ranking;
+    String? worldRanking;
     String? registerLink;
     String? requirementLink;
     List<MeritResult>? meritResult;
@@ -53,6 +55,7 @@ class Result {
         id: json["id"],
         name: json["name"],
         ranking: json["ranking"],
+        worldRanking: json["world_ranking"],
         registerLink: json["register_link"],
         requirementLink: json["requirement_link"],
         meritResult: List<MeritResult>.from(json["merit_result"].map((x) => MeritResult.fromJson(x))),
@@ -62,6 +65,7 @@ class Result {
         "id": id,
         "name": name,
         "ranking": ranking,
+        "world_ranking": worldRanking,
         "register_link": registerLink,
         "requirement_link": requirementLink,
         "merit_result": List<dynamic>.from(meritResult!.map((x) => x.toJson())),

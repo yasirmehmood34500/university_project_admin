@@ -102,47 +102,54 @@ class MeritListTile extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(style: TextStyle(fontWeight: FontWeight.bold), deptName!),
-              SizedBox(
-                height: 5,
+              Text(
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
+                ),
+                deptName!,
               ),
               Text(
-                style: TextStyle(fontWeight: FontWeight.bold),
-                entryTest! == "1" ? "Yes Entry Test" : "No Entry Test",
-              ),
-              Container(
-                child: Link(
-                  target: LinkTarget.blank,
-                  uri: Uri.parse(lastMeritUrl!),
-                  builder: (context, followLink) => GestureDetector(
-                    onTap: followLink,
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text(
-                        "For Merit List",
-                        style: TextStyle(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ),
+                style: TextStyle(
+                  fontSize: 12.0,
                 ),
+                entryTest! == "1" ? "Yes Entry Test" : "No Entry Test",
               ),
             ],
           ),
           Column(
             children: [
-              Text(lastMerit!,
+              Text("Merit ${lastMerit!}%",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
+                    fontSize: 12.0,
                   )),
             ],
           )
         ],
       ),
-      SizedBox(
-        height: 10.0,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            child: Link(
+              target: LinkTarget.blank,
+              uri: Uri.parse(lastMeritUrl!),
+              builder: (context, followLink) => GestureDetector(
+                onTap: followLink,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5.0),
+                  child: Text(
+                    "For Merit List",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -153,19 +160,14 @@ class MeritListTile extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
               padding: EdgeInsets.all(
-                10,
+                5,
               ),
               child: GestureDetector(
                 onTap: () {
                   Provider.of<UniversityListProvider>(context, listen: false)
                       .deleteMerit(uniIndex, index, id!);
                 },
-                child: Text(
-                  "Delete",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
+                child: Icon(Icons.remove),
               )),
           Container(
             decoration: BoxDecoration(
@@ -173,7 +175,7 @@ class MeritListTile extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             padding: EdgeInsets.all(
-              10,
+              5,
             ),
             child: GestureDetector(
               onTap: () {
@@ -192,12 +194,7 @@ class MeritListTile extends StatelessWidget {
                   ),
                 );
               },
-              child: Text(
-                "Update",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: Icon(Icons.edit),
             ),
           ),
         ],

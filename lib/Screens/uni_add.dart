@@ -20,6 +20,7 @@ class _UniAddState extends State<UniAdd> {
   final formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController rankingController = TextEditingController();
+  TextEditingController worldRankingController = TextEditingController();
   TextEditingController registerLinkController = TextEditingController();
   TextEditingController requirementLinkController = TextEditingController();
   bool isLoadding = false;
@@ -34,6 +35,7 @@ class _UniAddState extends State<UniAdd> {
       Map object = {
         "name": nameController.text,
         "ranking": rankingController.text,
+        "world_ranking": worldRankingController.text,
         "register_link": registerLinkController.text,
         "requirement_link": requirementLinkController.text
       };
@@ -45,6 +47,7 @@ class _UniAddState extends State<UniAdd> {
             id: universityAddedObject["id"],
             name: universityAddedObject["name"],
             ranking: universityAddedObject["ranking"],
+            worldRanking: universityAddedObject["world_ranking"],
             registerLink: universityAddedObject["register_link"],
             requirementLink: universityAddedObject["requirement_link"],
             meritResult: [],
@@ -136,9 +139,31 @@ class _UniAddState extends State<UniAdd> {
                           color: Colors.grey,
                         ),
                         hintText: '1',
-                        labelText: 'ranking',
+                        labelText: 'Pakistan Ranking',
                       ),
                       controller: rankingController,
+                      keyboardType: TextInputType.number,
+                      validator: (val) {
+                        return val!.length > 0 ? null : "Min 1 digit";
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                        ),
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                        ),
+                        hintText: '1',
+                        labelText: 'World Ranking',
+                      ),
+                      controller: worldRankingController,
                       keyboardType: TextInputType.number,
                       validator: (val) {
                         return val!.length > 0 ? null : "Min 1 digit";

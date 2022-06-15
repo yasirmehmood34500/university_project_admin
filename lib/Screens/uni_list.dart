@@ -64,6 +64,7 @@ class _UniListState extends State<UniList> {
                               universityList[index].requirementLink,
                           index: index,
                           meritResult: universityList[index].meritResult,
+                          worldRanking: universityList[index].worldRanking,
                         );
                       })
                   : Center(
@@ -79,6 +80,7 @@ class UniversityListTile extends StatelessWidget {
   final String? id;
   final String? name;
   final String? ranking;
+  final String? worldRanking;
   final String? registerLink;
   final String? requirementLink;
   final List<MeritResult>? meritResult;
@@ -88,6 +90,7 @@ class UniversityListTile extends StatelessWidget {
     this.id,
     this.name,
     this.ranking,
+    this.worldRanking,
     this.registerLink,
     this.requirementLink,
     this.meritResult,
@@ -97,63 +100,83 @@ class UniversityListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       Row(
+        children: [
+          Text(
+            style: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 12.0,
+            ),
+            name!,
+          ),
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            child: Link(
+              target: LinkTarget.blank,
+              uri: Uri.parse(registerLink!),
+              builder: (context, followLink) => GestureDetector(
+                onTap: followLink,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5.0),
+                  child: Text(
+                    "For Registration",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            child: Link(
+              target: LinkTarget.blank,
+              uri: Uri.parse(requirementLink!),
+              builder: (context, followLink) => GestureDetector(
+                onTap: followLink,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5.0),
+                  child: Text(
+                    "For Requirement",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(style: TextStyle(fontWeight: FontWeight.bold), name!),
-              Container(
-                child: Link(
-                  target: LinkTarget.blank,
-                  uri: Uri.parse(registerLink!),
-                  builder: (context, followLink) => GestureDetector(
-                    onTap: followLink,
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text(
-                        "For Registration",
-                        style: TextStyle(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                child: Link(
-                  target: LinkTarget.blank,
-                  uri: Uri.parse(requirementLink!),
-                  builder: (context, followLink) => GestureDetector(
-                    onTap: followLink,
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text(
-                        "For Requirement",
-                        style: TextStyle(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              Text("No ${ranking!} in Pakistan",
+                  style: TextStyle(
+                    fontSize: 12.0,
+                  )),
             ],
           ),
           Column(
             children: [
-              Text("R ${ranking!}",
+              Text("No ${worldRanking!} in World",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
+                    fontSize: 12.0,
                   )),
             ],
-          )
+          ),
         ],
       ),
       SizedBox(
-        height: 10.0,
+        height: 5.0,
       ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -164,19 +187,14 @@ class UniversityListTile extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
               padding: EdgeInsets.all(
-                10,
+                5,
               ),
               child: GestureDetector(
                 onTap: () {
                   Provider.of<UniversityListProvider>(context, listen: false)
                       .deleteUniversity(index, id!);
                 },
-                child: Text(
-                  "Delete",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
+                child: Icon(Icons.remove),
               )),
           Container(
             decoration: BoxDecoration(
@@ -184,7 +202,7 @@ class UniversityListTile extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             padding: EdgeInsets.all(
-              10,
+              5,
             ),
             child: GestureDetector(
               onTap: () {
@@ -196,17 +214,13 @@ class UniversityListTile extends StatelessWidget {
                         name: name,
                         index: index,
                         ranking: ranking,
+                        worldRanking: worldRanking,
                         requirementLink: requirementLink,
                         registerLink: registerLink),
                   ),
                 );
               },
-              child: Text(
-                "Update",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: Icon(Icons.edit),
             ),
           ),
           Container(
@@ -215,7 +229,7 @@ class UniversityListTile extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             padding: EdgeInsets.all(
-              10,
+              5,
             ),
             child: GestureDetector(
               onTap: () {
@@ -230,12 +244,7 @@ class UniversityListTile extends StatelessWidget {
                   ),
                 );
               },
-              child: Text(
-                "Merit",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: Icon(Icons.list),
             ),
           ),
         ],

@@ -85,13 +85,13 @@ class _MyDrawerAppState extends State<MyDrawerApp> {
               Container(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Text(
-                    "Develop by TTS",
+                    "Develop by Rai",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )),
               Container(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Text(
-                    "V 1.0",
+                    "v1.0.1",
                     style: TextStyle(),
                   )),
             ],

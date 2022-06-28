@@ -23,52 +23,141 @@ class MeritList extends StatefulWidget {
 }
 
 class _MeritListState extends State<MeritList> {
+  TextEditingController _searchTextController = TextEditingController();
+  bool _searchField = false;
+  void _searchFiledFun() {
+    setState(() {
+      _searchField = !_searchField;
+    });
+  }
+
+  @override
+  void initState() {
+    nowMeritResult = widget.meritResult!;
+    super.initState();
+  }
+
+  List<MeritResult>? nowMeritResult;
+
+  void _searchJob(String val) {
+    List<MeritResult>? results = [];
+    if (val.isEmpty) {
+      results = widget.meritResult;
+    } else {
+      results = widget.meritResult!
+          .where((element) =>
+              element.deptName!.toLowerCase().contains(val.toLowerCase()))
+          .toList();
+    }
+    setState(() {
+      nowMeritResult = results;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<UniversityListProvider>(context, listen: true)
         .getUniversityList();
     return Scaffold(
       appBar: AppBar(title: const Text("Merit List"), actions: [
+        GestureDetector(
+          onTap: _searchFiledFun,
+          child: Container(
+            padding: EdgeInsets.only(right: 5),
+            child: _searchField ? Icon(Icons.close) : Icon(Icons.search),
+          ),
+        ),
         Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => AddMerit(
-                      uniId: widget.uniId,
-                      uniIndex: widget.uniIndex,
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => AddMerit(
+                    uniId: widget.uniId,
+                    uniIndex: widget.uniIndex,
+                  ),
+                ),
+              );
+            },
+            child: Icon(
+              Icons.add,
+              size: 26.0,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ]),
+      body: Column(
+        children: [
+          _searchField
+              ? Form(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5,
+                    ),
+                    margin: EdgeInsets.only(
+                      top: 10,
+                    ),
+                    child: TextFormField(
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                      autofocus: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blueGrey,
+                          ),
+                        ),
+                        labelStyle: TextStyle(
+                          color: Colors.blueGrey,
+                        ),
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blueGrey,
+                          ),
+                        ),
+                        hintText: 'Search Department',
+                        labelText: 'Search',
+                      ),
+                      onChanged: (value) {
+                        _searchJob(value);
+                        setState(() {
+                          _searchTextController.text = value;
+                        });
+                      },
                     ),
                   ),
-                );
-              },
-              child: Icon(
-                Icons.add,
-                size: 26.0,
-                color: Colors.white,
-              ),
-            )),
-      ]),
-      body: Container(
-        padding: EdgeInsets.all(5.0),
-        child: widget.meritResult!.isNotEmpty
-            ? ListView.builder(
-                itemCount: widget.meritResult!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return MeritListTile(
-                    id: widget.meritResult![index].id,
-                    deptName: widget.meritResult![index].deptName,
-                    lastMerit: widget.meritResult![index].lastMerit,
-                    lastMeritUrl: widget.meritResult![index].lastMeritUrl,
-                    entryTest: widget.meritResult![index].entryTest,
-                    index: index,
-                    uniIndex: widget.uniIndex,
-                  );
-                })
-            : Center(
-                child: Text("No Merit found"),
-              ),
+                )
+              : Text(""),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(5.0),
+              child: widget.meritResult!.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: nowMeritResult!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return MeritListTile(
+                          id: nowMeritResult![index].id,
+                          deptName: nowMeritResult![index].deptName,
+                          lastMerit: nowMeritResult![index].lastMerit,
+                          lastMeritUrl: nowMeritResult![index].lastMeritUrl,
+                          entryTest: nowMeritResult![index].entryTest,
+                          index: index,
+                          uniIndex: widget.uniIndex,
+                        );
+                      })
+                  : Center(
+                      child: Text("No Merit found"),
+                    ),
+            ),
+          ),
+        ],
       ),
     );
   }

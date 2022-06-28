@@ -15,7 +15,10 @@ class UniList extends StatefulWidget {
 }
 
 class _UniListState extends State<UniList> {
+  TextEditingController _searchTextController = TextEditingController();
   bool dataLoad = false;
+
+  List<Result>? universityList = [];
   fetchUniversity() async {
     var universityListProvider =
         Provider.of<UniversityListProvider>(context, listen: false);
@@ -35,41 +38,132 @@ class _UniListState extends State<UniList> {
     super.didChangeDependencies();
   }
 
+  void _searchJob(String val) {
+    List<Result>? results = [];
+    if (val.isEmpty) {
+      results = Provider.of<UniversityListProvider>(context, listen: false)
+          .getUniversityList();
+    } else {
+      results = Provider.of<UniversityListProvider>(context, listen: false)
+          .getUniversityList()!
+          .where((element) =>
+              element.name!.toLowerCase().contains(val.toLowerCase()))
+          .toList();
+    }
+    setState(() {
+      universityList = results;
+    });
+  }
+
+  bool _searchField = false;
+  void _searchFiledFun() {
+    setState(() {
+      _searchField = !_searchField;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Result>? universityList =
-        Provider.of<UniversityListProvider>(context, listen: true)
-            .getUniversityList();
+    if (_searchTextController.text.isEmpty) {
+      setState(() {
+        universityList =
+            Provider.of<UniversityListProvider>(context, listen: true)
+                .getUniversityList();
+      });
+    }
     bool isHave = Provider.of<UniversityListProvider>(context, listen: false)
         .isLoadingUniversityListProvider;
     return Scaffold(
-      appBar: AppBar(title: const Text("All University")),
+      appBar: AppBar(
+        title: const Text("All University"),
+        actions: [
+          GestureDetector(
+            onTap: _searchFiledFun,
+            child: Container(
+              padding: EdgeInsets.only(right: 5),
+              child: _searchField ? Icon(Icons.close) : Icon(Icons.search),
+            ),
+          )
+        ],
+      ),
       drawer: MyDrawerApp(),
       body: universityList == null || isHave == true
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Container(
-              padding: EdgeInsets.all(5.0),
-              child: universityList.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: universityList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return UniversityListTile(
-                          id: universityList[index].id,
-                          name: universityList[index].name,
-                          ranking: universityList[index].ranking,
-                          registerLink: universityList[index].registerLink,
-                          requirementLink:
-                              universityList[index].requirementLink,
-                          index: index,
-                          meritResult: universityList[index].meritResult,
-                          worldRanking: universityList[index].worldRanking,
-                        );
-                      })
-                  : Center(
-                      child: Text("No University found"),
-                    ),
+          : Column(
+              children: [
+                _searchField
+                    ? Form(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5,
+                          ),
+                          margin: EdgeInsets.only(
+                            top: 10,
+                          ),
+                          child: TextFormField(
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                            autofocus: false,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.blueGrey,
+                                ),
+                              ),
+                              labelStyle: TextStyle(
+                                color: Colors.blueGrey,
+                              ),
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.blueGrey,
+                                ),
+                              ),
+                              hintText: 'Search University',
+                              labelText: 'Search',
+                            ),
+                            onChanged: (value) {
+                              _searchJob(value);
+                              setState(() {
+                                _searchTextController.text = value;
+                              });
+                            },
+                          ),
+                        ),
+                      )
+                    : Text(""),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(5.0),
+                    child: universityList!.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: universityList!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return UniversityListTile(
+                                id: universityList![index].id,
+                                name: universityList![index].name,
+                                ranking: universityList![index].ranking,
+                                registerLink:
+                                    universityList![index].registerLink,
+                                requirementLink:
+                                    universityList![index].requirementLink,
+                                index: index,
+                                meritResult: universityList![index].meritResult,
+                                worldRanking:
+                                    universityList![index].worldRanking,
+                              );
+                            })
+                        : Center(
+                            child: Text("No University found"),
+                          ),
+                  ),
+                ),
+              ],
             ),
     );
   }
